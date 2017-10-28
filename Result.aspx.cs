@@ -31,10 +31,30 @@ public partial class _Default : System.Web.UI.Page
             SqlDataAdapter ad = new SqlDataAdapter(cmd);
             ad.Fill(ds, "book");
             con.Close();
-            gv.DataSource = ds;
-            gv.AutoGenerateColumns = true;
-            this.DataBind();
-
+            if (ds.Tables["book"].Rows.Count == 0)
+            {
+                if(Session["login"] == null) { 
+                    Server.TransferRequest("Request.aspx");
+                }
+                else
+                {
+                    if(Session["login"].ToString() == "")
+                    {
+                        Server.TransferRequest("Request.aspx");
+                    }
+                    else
+                    {
+                        gv.Visible = false;
+                        Label1.Text = "Book wasn't found!";
+                    }
+                }
+            }
+            else
+            { 
+                gv.DataSource = ds;
+                gv.AutoGenerateColumns = true;
+                this.DataBind();
+            }
 
         }
     }
